@@ -1,0 +1,1 @@
+function e(e,t=`/iskendy-frontend/`){if(t===`/`)return e;let n=t.slice(0,-1),r=e===n?`/`:e.startsWith(t)?e.slice(n.length):e;return r===`/index.html`?`/`:r===`/board/`||r===`/board/index.html`?`/board`:r}function t(e,t=`/iskendy-frontend/`){return t===`/`||!/^\/(?!\/)/.test(e)||e===t.slice(0,-1)||e.startsWith(t)?e:t+e.slice(1)}export{e as n,t};

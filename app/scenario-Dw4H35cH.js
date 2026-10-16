@@ -1,0 +1,1 @@
+import{n as e}from"./manual-presets-CCq-828P.js";import{t}from"./base-path-BbjCUHrt.js";var n=new URL(location.href).searchParams.get(`preset`);n!==null&&Object.hasOwn(e,n)?(sessionStorage.setItem(`iskendy_linked_manual_preset`,n),sessionStorage.setItem(`iskendy_linked_manual_seed`,`1`),location.replace(t(e[n].route))):location.replace(t(`/`));

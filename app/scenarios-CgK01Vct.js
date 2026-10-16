@@ -1,0 +1,1 @@
+import{n as e}from"./manual-presets-CCq-828P.js";import{t}from"./base-path-BbjCUHrt.js";var n=document.querySelector(`#scenarios`);for(let[r,i]of Object.entries(e)){let e=document.createElement(`a`);e.href=t(`/dev/scenario.html?preset=`+encodeURIComponent(r)),e.textContent=i.label,n.append(e)}
