@@ -1,6 +1,6 @@
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
 import { applyLinkedManualPreset } from '../../dev/manual-presets';
-import { resetFixtures } from '../msw/handlers';
+import { fixtureResponse, resetFixtures } from '../msw/handlers';
 beforeEach(() => {
   vi.stubEnv('MODE', 'mock');
   localStorage.clear();
@@ -9,6 +9,18 @@ beforeEach(() => {
 });
 afterEach(() => vi.unstubAllEnvs());
 describe('explicit linked mock scenario', () => {
+  it.each([996, 997, 998])(
+    'allows rating issued order %i on a direct preview visit',
+    async (number) => {
+      applyLinkedManualPreset();
+      const response = await fixtureResponse(
+        '/api/feedback/check',
+        new Request('http://localhost/api/feedback/check?number=' + number),
+      );
+      expect(await response.json()).toMatchObject({ ok: true, number });
+      expect(localStorage.getItem('iskendi_my_order')).toBeNull();
+    },
+  );
   it('seeds997 once and reload preserves confirmed feedback and unknown fields', () => {
     sessionStorage.setItem('iskendy_linked_manual_preset', 'positive');
     sessionStorage.setItem('iskendy_linked_manual_seed', '1');

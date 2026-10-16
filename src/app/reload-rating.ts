@@ -1,3 +1,5 @@
+import { appHref } from './base-path';
+
 type Runtime = {
   entries: () => Pick<PerformanceEntry, 'name'>[];
   origin: string;
@@ -24,7 +26,10 @@ export async function reloadRatingScreen(runtime?: Runtime): Promise<void> {
         !url.password &&
         !url.search &&
         !url.hash &&
-        /^\/app\/lazy-screens-[a-zA-Z0-9_-]+\.js$/.test(url.pathname)
+        url.pathname.startsWith(appHref('/app/')) &&
+        /^lazy-screens-[a-zA-Z0-9_-]+\.js$/.test(
+          url.pathname.slice(appHref('/app/').length),
+        )
       );
     });
     if (asset)

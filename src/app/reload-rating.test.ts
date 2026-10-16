@@ -1,6 +1,7 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { reloadRatingScreen } from './reload-rating';
 const origin = 'https://guest.test';
+afterEach(() => vi.unstubAllEnvs());
 describe('explicit rating cache recovery', () => {
   it('refreshes only the most recent observed local hashed rating module before reload', async () => {
     const reload = vi.fn(),
@@ -87,4 +88,24 @@ describe('explicit rating cache recovery', () => {
       vi.useRealTimers();
     }
   });
+});
+
+it('refreshes only the demo asset inside its own base path', async () => {
+  vi.stubEnv('BASE_URL', '/iskendy-frontend/');
+  const reload = vi.fn(),
+    fetchAsset = vi.fn().mockResolvedValue({});
+  await reloadRatingScreen({
+    origin,
+    reload,
+    fetchAsset,
+    entries: () => [
+      { name: `${origin}/iskendy-frontend/app/lazy-screens-demo.js` },
+      { name: `${origin}/app/lazy-screens-other.js` },
+    ],
+  });
+  expect(fetchAsset).toHaveBeenCalledExactlyOnceWith(
+    `${origin}/iskendy-frontend/app/lazy-screens-demo.js`,
+    expect.anything(),
+  );
+  expect(reload).toHaveBeenCalledOnce();
 });

@@ -1,4 +1,5 @@
 import { spaClick } from '../link/spaClick';
+import { appHref } from '../../app/base-path';
 import { returnBarContent } from '../../content/return-bar';
 import styles from './ReturnBar.module.css';
 export function ReturnBar({
@@ -24,7 +25,7 @@ export function ReturnBar({
     : returnBarContent[status];
   return (
     <a
-      href="/board?my=1"
+      href={appHref('/board?my=1')}
       onClick={(event) => {
         onClick?.();
         spaClick('/board?my=1', onNavigate)(event);

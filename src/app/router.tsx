@@ -1,4 +1,5 @@
 import { useSyncExternalStore, type AnchorHTMLAttributes } from 'react';
+import { appHref, appPathname } from './base-path';
 
 /** ADR-020: two addresses (/ and /board) with a query string; no library needed. */
 const listeners = new Set<() => void>();
@@ -11,7 +12,7 @@ function subscribe(listener: () => void) {
     if (!listeners.size) window.removeEventListener('popstate', notify);
   };
 }
-const address = () => location.pathname + location.search;
+const address = () => appPathname(location.pathname) + location.search;
 
 export function useLocation() {
   const href = useSyncExternalStore(subscribe, address, () => '/');
@@ -22,8 +23,8 @@ export function useLocation() {
 }
 export function navigate(to: string, { replace = false } = {}) {
   // Through history so src/boot/route-handoff.ts still sees app ↔ legacy crossings.
-  if (replace) history.replaceState(history.state, '', to);
-  else history.pushState({ guestReturnTo: address() }, '', to);
+  if (replace) history.replaceState(history.state, '', appHref(to));
+  else history.pushState({ guestReturnTo: address() }, '', appHref(to));
   notify();
 }
 /** Only app-owned history entries may take the guest back; a direct link has a safe fallback. */
@@ -43,7 +44,7 @@ export function Link({
   return (
     <a
       {...rest}
-      href={to}
+      href={appHref(to)}
       onClick={(event) => {
         onClick?.(event);
         if (

@@ -1,4 +1,5 @@
 import { manualPresets } from './manual-presets';
+import { appHref } from '../src/app/base-path';
 // Explicit mock-only scenario link. The app is the ordinary top-level page.
 const preset = new URL(location.href).searchParams.get('preset');
 if (
@@ -8,5 +9,7 @@ if (
 ) {
   sessionStorage.setItem('iskendy_linked_manual_preset', preset);
   sessionStorage.setItem('iskendy_linked_manual_seed', '1');
-  location.replace(manualPresets[preset as keyof typeof manualPresets].route);
-} else location.replace('/');
+  location.replace(
+    appHref(manualPresets[preset as keyof typeof manualPresets].route),
+  );
+} else location.replace(appHref('/'));

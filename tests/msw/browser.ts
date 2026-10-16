@@ -1,4 +1,5 @@
 import { setupWorker } from 'msw/browser';
+import { http, HttpResponse } from 'msw';
 import { applyLinkedManualPreset } from '../../dev/manual-presets';
 import {
   handlers,
@@ -37,9 +38,17 @@ export async function enableMocks(): Promise<void> {
   const transport =
     window.isSecureContext && 'serviceWorker' in navigator ? 'worker' : 'local';
   if (transport === 'worker') {
-    const worker = setupWorker(...handlers);
+    const worker = setupWorker(
+      ...handlers,
+      // An explicit response is required: MSW's unhandled-request diagnostic may
+      // still fall through to fetch in the worker. Never reach a real API/proxy.
+      http.all(
+        ({ request }) => new URL(request.url).pathname.startsWith('/api/'),
+        () => new HttpResponse(null, { status: 501 }),
+      ),
+    );
     await worker.start({
-      serviceWorker: { url: '/mockServiceWorker.js' },
+      serviceWorker: { url: import.meta.env.BASE_URL + 'mockServiceWorker.js' },
       quiet: true,
       onUnhandledRequest(request, print) {
         if (new URL(request.url).pathname.startsWith('/api/')) print.error();
