@@ -11,6 +11,9 @@ artifacts/
 .DS_Store
 .cache/
 dist-mock/
+dist-demo/
+test-results-cloud/
+playwright-report-cloud/
 source-revision.json
 
 playwright-report-spike/

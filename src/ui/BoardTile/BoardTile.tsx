@@ -1,4 +1,5 @@
 import { spaClick } from '../link/spaClick';
+import { appHref } from '../../app/base-path';
 import type { Board } from '../../api/schemas/guest';
 import { tileContent } from '../../content/tile';
 import go from '../../assets/orders/board-go.svg?no-inline';
@@ -17,7 +18,7 @@ export function BoardTile({
   const preparing = board ? board.orders.length - ready! : undefined;
   return (
     <a
-      href="/board?view=queue"
+      href={appHref('/board?view=queue')}
       onClick={spaClick('/board?view=queue', onNavigate)}
       className={styles.tile}
     >

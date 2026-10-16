@@ -84,6 +84,17 @@ export const manualPresets = {
   },
   gone: { label: 'Заказ снят / не найден', route: '/board?my=1', number: 999 },
 } as const;
+
+/** A fresh cloud session enables interaction without resetting existing browser data. */
+export function prepareCloudDemoPreset(): void {
+  if (import.meta.env.MODE !== 'mock') return;
+  if (
+    !sessionStorage.getItem('iskendy_linked_manual_preset') &&
+    !sessionStorage.getItem('iskendy_manual_preset')
+  )
+    sessionStorage.setItem('iskendy_linked_manual_preset', 'entry');
+}
+
 export function applyManualPreset(): void {
   if (import.meta.env.MODE !== 'mock') return;
   const name = sessionStorage.getItem('iskendy_manual_preset');
@@ -166,6 +177,9 @@ export function applyManualPreset(): void {
 /** Explicit linked scenarios seed once, so reload never resets confirmed feedback. */
 export function applyLinkedManualPreset(): void {
   if (import.meta.env.MODE !== 'mock') return;
+  // Direct preview visits support the same synthetic orders as scenario links.
+  // Explicit presets below may still select error fixtures for recovery tests.
+  setInteractiveDemo(true);
   const linked = sessionStorage.getItem('iskendy_linked_manual_preset');
   if (
     sessionStorage.getItem('iskendy_linked_manual_seed') !== '1' &&

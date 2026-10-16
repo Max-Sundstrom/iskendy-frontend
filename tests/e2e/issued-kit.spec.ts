@@ -19,6 +19,13 @@ for (const [index, width, height] of [
     const box = (await card.boundingBox())!;
     expect(box.width).toBe(width);
     if (height) expect(box.height).toBe(height);
+    const invitation = card.getByText('Оцените эмоцией — это займёт секунду.', {
+      exact: true,
+    });
+    if (index === 0) {
+      // At 342px the Onest text fits in one line, including Linux Chromium at 1×.
+      expect((await invitation.boundingBox())!.height).toBe(24);
+    }
     await expect(card.getByRole('link')).toHaveCount(0);
     await card.screenshot({ path: info.outputPath(`issued-${width}.png`) });
     if (index === 0) {
@@ -28,6 +35,13 @@ for (const [index, width, height] of [
       ).toBeVisible();
       const photos = await card.locator('img').all();
       const narrow = (await card.boundingBox())!;
+      // Precision must preserve natural wrapping on narrower phones, without clipping.
+      expect((await invitation.boundingBox())!.height).toBe(48);
+      expect(
+        await invitation.evaluate(
+          (element) => element.scrollWidth <= element.clientWidth,
+        ),
+      ).toBe(true);
       for (const photo of photos) {
         const b = (await photo.boundingBox())!;
         expect(b.x).toBeGreaterThanOrEqual(narrow.x);

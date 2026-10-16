@@ -42,6 +42,9 @@ async function restore(page: Page, feedback = false) {
   await page.goto('/board?my=1');
   await page.waitForFunction(() => Boolean(window.__ISKENDY_TEST__));
   await page.evaluate(() => {
+    // This contract test uses captured response bytes, independently of the
+    // interactive numbered replies enabled for direct human preview visits.
+    window.__ISKENDY_TEST__!.reset();
     window.__ISKENDY_TEST__!.setFixture(
       '/api/feedback/check',
       'check-served-positive',

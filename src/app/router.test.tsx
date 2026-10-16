@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Link, useLocation, useNavigate } from './router';
 function Where() {
   const { pathname, search } = useLocation();
@@ -16,6 +16,7 @@ function Where() {
   );
 }
 beforeEach(() => history.replaceState(null, '', '/board?my=1'));
+afterEach(() => vi.unstubAllEnvs());
 describe('own router (ADR-020)', () => {
   it('reads the address and pushes or replaces history entries', () => {
     render(<Where />);
@@ -46,5 +47,26 @@ describe('own router (ADR-020)', () => {
     expect(screen.getByRole('status')).toHaveTextContent('/board?my=1');
     expect(fireEvent.click(link)).toBe(false);
     expect(screen.getByRole('status')).toHaveTextContent('/board?view=queue');
+  });
+});
+
+describe('router on static Pages hosting', () => {
+  it('normalizes direct static URLs and keeps navigation and browser links under the base', () => {
+    vi.stubEnv('BASE_URL', '/iskendy-frontend/');
+    history.replaceState(null, '', '/iskendy-frontend/board/index.html?my=1');
+    render(<Where />);
+    expect(screen.getByRole('status')).toHaveTextContent('/board?my=1');
+    expect(screen.getByRole('link', { name: 'board' })).toHaveAttribute(
+      'href',
+      '/iskendy-frontend/board?view=queue',
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'push' }));
+    expect(location.pathname + location.search).toBe(
+      '/iskendy-frontend/board?view=help',
+    );
+    expect(history.state.guestReturnTo).toBe('/board?my=1');
+    fireEvent.click(screen.getByRole('button', { name: 'replace' }));
+    expect(location.pathname).toBe('/iskendy-frontend/');
+    expect(screen.getByRole('status')).toHaveTextContent('/');
   });
 });

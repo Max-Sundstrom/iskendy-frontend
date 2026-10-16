@@ -23,6 +23,8 @@ jobs:
       - run: npm ci
       - run: npm audit --omit=dev --audit-level=high
       - run: npm run verify
+      - name: Verify the isolated static demo
+        run: npx playwright test --config playwright.cloud.config.ts
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
@@ -32,4 +34,7 @@ jobs:
             test-results/
             coverage/
             dist/
+            dist-demo/
+            playwright-report-cloud/
+            test-results-cloud/
           retention-days: 14

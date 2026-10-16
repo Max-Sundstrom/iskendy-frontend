@@ -19,6 +19,8 @@ body {
   background: var(--iskendi-bg-canvas);
   color: var(--iskendi-fg-primary);
   font: var(--t-web-mobile-body);
+  /* Keep fractional font advances on Linux at 1×, matching the Figma metrics. */
+  text-rendering: geometricPrecision;
 }
 button,
 input,
