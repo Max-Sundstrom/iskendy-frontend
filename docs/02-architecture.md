@@ -327,4 +327,5 @@ export default defineConfig({
 | `guestOfflineAfterMs` | `30000` | Q-01 |
 | `contactConsent` | `false` | Q-07 |
 | `rateBlockBeforeDelay` | `true` (как в Figma) | Q-19 |
-| `telegramBot`, `offerCard`, `gameTile` | `false` | Вне объёма |
+| `telegramBot`, `offerCard` | `false` | Вне объёма |
+| `gameTile` | `true` — статичная карточка «Скоро» (docs/44) | ADR-021, Q-34, Q-36: игра встраивается по [53-game-kometa.md](53-game-kometa.md) |

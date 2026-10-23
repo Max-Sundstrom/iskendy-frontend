@@ -57,6 +57,7 @@
 - Ссылки на Яндекс Карты, 2ГИС, Telegram, VK, Instagram — только из `GET /api/feedback/config`. Перед выводом проверить через `new URL()`, что протокол `https:`. Иначе кнопку не рисовать.
 - Внешние ссылки открываются с `rel="noopener noreferrer"`. `target="_blank"` — только где так в макете.
 - Произвольные URL из данных пользователя никогда не становятся ссылками.
+- Исключение — iframe игры (ADR-021): origin игры задан константой сборки в `src/config/`, только `https:`. Сообщения `postMessage` проверяются по `origin`, `source` и Zod. В iframe никогда не уходят `claimToken`, `editToken`, метки `guest`/`session` и адрес с номером заказа ([53-game-kometa.md](53-game-kometa.md) §6).
 
 ## 6. Лимиты и вежливость к серверу
 
